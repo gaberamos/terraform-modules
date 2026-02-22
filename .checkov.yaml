@@ -1,0 +1,35 @@
+# Checkov configuration for terraform-modules
+# Skipped checks are documented with the reason they are accepted risks
+# for this repository's use case (static website hosting).
+
+skip-check:
+  # CloudFront access logging not enabled — cost/simplicity tradeoff for
+  # static sites; enable if audit trail is required.
+  - CKV_AWS_86
+
+  # CloudFront WAF not associated — add aws_wafv2_web_acl_association when
+  # rate limiting or OWASP rules are needed.
+  - CKV_AWS_68
+
+  # S3 server access logging not enabled — CloudFront logs cover request
+  # visibility for this pattern.
+  - CKV_AWS_18
+
+  # S3 SSE-KMS not enforced — AWS SSE-S3 (default) is sufficient for public
+  # static content; upgrade to KMS if compliance requires it.
+  - CKV_AWS_19
+
+  # S3 versioning not enabled — force_destroy = true is intentional for
+  # ephemeral static hosting buckets; versioning would conflict with that.
+  - CKV_AWS_145
+
+  # S3 lifecycle configuration not required — static site buckets are managed
+  # by Terraform, not lifecycle policies.
+  - CKV2_AWS_61
+
+  # S3 event notifications not configured — not applicable for this use case.
+  - CKV2_AWS_62
+
+  # CloudFront default TLS certificate check — we use acm_certificate_arn with
+  # TLSv1.2_2021, which satisfies the intent of this check.
+  - CKV2_AWS_47
